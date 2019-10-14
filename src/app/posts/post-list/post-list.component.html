@@ -1,0 +1,22 @@
+<mat-accordion multi="true" *ngIf="posts.length > 0">
+  <mat-expansion-panel *ngFor="let post of posts">
+
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{post.title}}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    {{post.content}}
+
+  </mat-expansion-panel>
+</mat-accordion>
+
+<mat-card-title class="without-posts" *ngIf="posts.length <= 0">No posts added yet!</mat-card-title>
+
+    <!-- <mat-form-field>
+      <input matInput placeholder="First name">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Age">
+    </mat-form-field> -->

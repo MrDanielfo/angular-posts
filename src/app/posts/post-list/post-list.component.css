@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  margin-top: 1rem;
+}
+
+.without-posts {
+  margin-top: 2rem;
+  text-align: center;
+}

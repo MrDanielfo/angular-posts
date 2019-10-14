@@ -1,0 +1,16 @@
+mat-card {
+  margin: 1rem 0;
+}
+
+mat-form-field,
+textarea {
+  width: 100%;
+}
+
+.errorForm {
+  margin: .5rem 0;
+}
+
+button.btnSend {
+  margin: 1rem 0;
+}
