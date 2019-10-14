@@ -9,6 +9,7 @@
             ngModel
             required
             minlength="3"
+            placeholder="Title"
             #title="ngModel">
         <mat-error class="errorForm" *ngIf="title.invalid">Please enter a title for your post</mat-error>
       </mat-form-field>
@@ -19,6 +20,7 @@
             name="content"
             ngModel
             required
+            placeholder="Content"
             #content="ngModel">
         </textarea>
         <mat-error class="errorForm" *ngIf="content.invalid">Please enter the content of your post</mat-error>
