@@ -14,3 +14,7 @@ textarea {
 button.btnSend {
   margin: 1rem 0;
 }
+
+mat-spinner {
+  margin: auto;
+}

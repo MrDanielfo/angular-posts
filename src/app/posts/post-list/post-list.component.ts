@@ -13,6 +13,7 @@ import { PostsService } from '../posts.service';
 export class PostListComponent implements OnInit, OnDestroy {
 
   posts: Post[] = [];
+  isLoading = false;
   private postsSub: Subscription;
 
   // al declarar el public crear una propiedad con el mismo nombre automáticamente
@@ -21,9 +22,13 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.isLoading = true;
     this.postsService.getPosts();
     this.postsSub = this.postsService.getPostUpdateListener()
                       .subscribe((posts: Post[]) => {
+                        setTimeout(() => {
+                          this.isLoading = false;
+                        }, 500);
                         this.posts = posts;
                       });
   }
