@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PostsService } from '../posts.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Post } from '../post.model';
+import { mimeType } from './mite-type.validator';
 
 @Component({
   selector: 'app-post-create',
@@ -34,8 +35,9 @@ export class PostCreateComponent implements OnInit {
     this.form = new FormGroup({
       title : new FormControl(null, { validators: [Validators.required, Validators.minLength(3)] }),
       content: new FormControl(null, { validators: [Validators.required, Validators.minLength(3)] }),
-      image: new FormControl(null, { validators: [Validators.required] })
+      image: new FormControl(null, { validators: [Validators.required], asyncValidators: [mimeType] })
     });
+
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
           this.mode = 'edit';
@@ -47,10 +49,15 @@ export class PostCreateComponent implements OnInit {
             setTimeout(() => {
               this.isLoading = false;
             }, 500);
-            this.post = {id: postData.post._id, title: postData.post.title, content: postData.post.content };
+            this.post = { id: postData.post._id,
+                          title: postData.post.title,
+                          content: postData.post.content,
+                          imagePath: postData.post.imagePath
+                        };
             this.form.setValue({
               title: this.post.title,
-              content: this.post.content
+              content: this.post.content,
+              image: this.post.imagePath
             });
           });
       } else {
@@ -68,9 +75,16 @@ export class PostCreateComponent implements OnInit {
     this.isLoading = true;
 
     if (this.mode === 'create') {
-      this.postsService.addPost(this.form.value.title, this.form.value.content);
+      this.postsService.addPost(this.form.value.title,
+                                this.form.value.content,
+                                this.form.value.image);
     } else {
-      this.postsService.updatePost(this.postId, this.form.value.title, this.form.value.content);
+      this.postsService.updatePost(
+        this.postId,
+        this.form.value.title,
+        this.form.value.content,
+        this.form.value.image
+      );
     }
 
     this.form.reset();

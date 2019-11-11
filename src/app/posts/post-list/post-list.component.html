@@ -8,6 +8,11 @@
         {{post.title}}
       </mat-panel-title>
     </mat-expansion-panel-header>
+
+    <div class="image-post">
+      <img [src]="post.imagePath" [alt]="post.title">
+    </div>
+
     <p>{{post.content}}</p>
 
     <mat-action-row>
