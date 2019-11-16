@@ -23,6 +23,8 @@
   </mat-expansion-panel>
 </mat-accordion>
 
+<mat-paginator [length]="totalPosts" [pageSize]="postsPerPage" [pageSizeOptions]="pageSizeOptions" (page)="onChangedPage($event)"></mat-paginator>
+
 <mat-card-title class="without-posts" *ngIf="posts.length <= 0 && !isLoading">No posts added yet!</mat-card-title>
 
     <!-- <mat-form-field>
