@@ -39,18 +39,15 @@ router.post("/login", async (req, res, next) => {
     }
 
     const password = await bcrypt.compare(req.body.password, userFound.password);
-
     if(password) {
       const token = jwt.sign(
         {email: userFound.email, userId: userFound._id },
         'the_higher_they_fly_the_harder_they_fall',
         { expiresIn: '1h' }
       )
-
-
-
       res.status(200).json({
-        token
+        token,
+        expiresIn: 3600
       })
 
     } else {
@@ -58,7 +55,6 @@ router.post("/login", async (req, res, next) => {
         message: "Auth failed"
       });
     }
-
 
   } catch (err) {
     await res.status(500).json({

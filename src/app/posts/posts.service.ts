@@ -29,7 +29,7 @@ export class PostsService {
         'http://localhost:3000/api/posts' + queryParams
       )
       .pipe(map((postData) => {
-        console.log(postData);
+        // console.log(postData);
         return { posts: postData.posts.map(post => {
           return {
             id: post._id,

@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const router = express.Router();
 const Post = require('../models/Post');
+const checkOut = require('../middleware/check-auth');
 
 // Storage in Multer
 
@@ -29,7 +30,7 @@ const storage = multer.diskStorage({
 });
 
 
-router.post("", multer({storage}).single("image"), async (req, res, next) => {
+router.post("", checkOut, multer({storage}).single("image"), async (req, res, next) => {
 
   try {
     const url = req.protocol + '://' + req.get("host");
@@ -39,11 +40,12 @@ router.post("", multer({storage}).single("image"), async (req, res, next) => {
       imagePath: url + "/images/" + req.file.filename
     }
     const post = await Post.create(newPost);
-    await res.status(201).json({ message: "Post Added",
-                                post: {
-                                  ...post,
-                                  id: post._id
-                                }
+    await res.status(201)
+        .json({ message: "Post Added",
+                post: {
+                  ...post,
+                  id: post._id
+                }
     });
   } catch (err) {
     console.log(err)
@@ -98,7 +100,7 @@ router.get('/:id', async (req, res, next) => {
 
 });
 
-router.put('/:id', multer({ storage }).single("image"), async (req, res, next) => {
+router.put('/:id', checkOut, multer({ storage }).single("image"), async (req, res, next) => {
 
   let imagePath = req.body.imagePath;
 
@@ -125,9 +127,8 @@ router.put('/:id', multer({ storage }).single("image"), async (req, res, next) =
 
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", checkOut, async (req, res, next) => {
   try {
-    console.log(req.params.id);
     const post = await Post.findOneAndRemove({ _id: req.params.id });
     res.status(200).json({
       message: "Post deleted",
