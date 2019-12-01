@@ -34,10 +34,14 @@ router.post("", checkOut, multer({storage}).single("image"), async (req, res, ne
 
   try {
     const url = req.protocol + '://' + req.get("host");
+
+    const { userId } = req.userData
+
     const newPost = {
       title: req.body.title,
       content: req.body.content,
-      imagePath: url + "/images/" + req.file.filename
+      imagePath: url + "/images/" + req.file.filename,
+      creator: userId
     }
     const post = await Post.create(newPost);
     await res.status(201)
@@ -104,6 +108,8 @@ router.put('/:id', checkOut, multer({ storage }).single("image"), async (req, re
 
   let imagePath = req.body.imagePath;
 
+  const { userId } = req.userData
+
   if (req.file) {
     const url = req.protocol + '://' + req.get("host");
     imagePath = url + "/images/" + req.file.filename;
@@ -114,26 +120,43 @@ router.put('/:id', checkOut, multer({ storage }).single("image"), async (req, re
   const newPost = {
     title: req.body.title,
     content: req.body.content,
-    imagePath: imagePath
+    imagePath: imagePath,
+    creator: userId
   }
-  const filter = { _id: id }
+  const filter = { _id: id, creator: userId }
 
   const post = await Post.findOneAndUpdate(filter, newPost, { new: true });
 
-  res.status(200).json({
-    message: "Post updated succesfully",
-    post: post
-  });
-
+  if (post !== null) {
+    res.status(200).json({
+      message: "Post updated succesfully",
+      post: post
+    });
+  } else {
+    res.status(401).json({
+      message: "Not authorized"
+    });
+  }
 });
 
 router.delete("/:id", checkOut, async (req, res, next) => {
   try {
-    const post = await Post.findOneAndRemove({ _id: req.params.id });
-    res.status(200).json({
-      message: "Post deleted",
-      post: post
-    });
+
+    const { userId } = req.userData
+    const id = req.params.id;
+    const filter = { _id: id, creator: userId }
+    const post = await Post.findOneAndRemove(filter);
+    if (post !== null) {
+      res.status(200).json({
+        message: "Post deleted",
+        post: post
+      });
+    } else {
+      res.status(401).json({
+        message: "Not authorized"
+      });
+    }
+
   } catch (err) {
     console.log(err)
   }
