@@ -44,7 +44,7 @@ router.post("", checkOut, multer({storage}).single("image"), async (req, res, ne
       creator: userId
     }
     const post = await Post.create(newPost);
-    await res.status(201)
+    res.status(201)
         .json({ message: "Post Added",
                 post: {
                   ...post,
@@ -52,7 +52,9 @@ router.post("", checkOut, multer({storage}).single("image"), async (req, res, ne
                 }
     });
   } catch (err) {
-    console.log(err)
+      res.status(500).json({
+        message: "Creating a post Failed",
+      });
   }
 
 });
@@ -81,7 +83,9 @@ router.get('', async (req, res, next) => {
     });
 
   } catch (err) {
-    console.log(err);
+    res.status(500).json({
+      message: "Post fetch failed"
+    });
   }
 
 });
@@ -106,36 +110,44 @@ router.get('/:id', async (req, res, next) => {
 
 router.put('/:id', checkOut, multer({ storage }).single("image"), async (req, res, next) => {
 
-  let imagePath = req.body.imagePath;
+  try {
+        let imagePath = req.body.imagePath;
 
-  const { userId } = req.userData
+        const { userId } = req.userData;
 
-  if (req.file) {
-    const url = req.protocol + '://' + req.get("host");
-    imagePath = url + "/images/" + req.file.filename;
-  }
+        if (req.file) {
+          const url = req.protocol + "://" + req.get("host");
+          imagePath = url + "/images/" + req.file.filename;
+        }
 
-  const id = req.params.id;
+        const id = req.params.id;
 
-  const newPost = {
-    title: req.body.title,
-    content: req.body.content,
-    imagePath: imagePath,
-    creator: userId
-  }
-  const filter = { _id: id, creator: userId }
+        const newPost = {
+          title: req.body.title,
+          content: req.body.content,
+          imagePath: imagePath,
+          creator: userId
+        };
+        const filter = { _id: id, creator: userId };
 
-  const post = await Post.findOneAndUpdate(filter, newPost, { new: true });
+        const post = await Post.findOneAndUpdate(filter, newPost, {
+          new: true
+        });
 
-  if (post !== null) {
-    res.status(200).json({
-      message: "Post updated succesfully",
-      post: post
-    });
-  } else {
-    res.status(401).json({
-      message: "Not authorized"
-    });
+        if (post !== null) {
+          res.status(200).json({
+            message: "Post updated succesfully",
+            post: post
+          });
+        } else {
+          res.status(401).json({
+            message: "Not authorized"
+          });
+        }
+  } catch (err) {
+      res.status(500).json({
+        message: "Could not updated the post"
+      });
   }
 });
 
@@ -158,7 +170,9 @@ router.delete("/:id", checkOut, async (req, res, next) => {
     }
 
   } catch (err) {
-    console.log(err)
+    res.status(500).json({
+      message: "Could not delete the post"
+    });
   }
 });
 

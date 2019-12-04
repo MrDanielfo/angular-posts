@@ -40,10 +40,12 @@ export class AuthService {
 
   createUser(email: string, password: string) {
     const authData: Auth = { email, password };
-    this.http
+    return this.http
       .post('http://localhost:3000/api/users/signup', authData, this.httpOptions)
-      .subscribe(data => {
-        console.log(data);
+      .subscribe(() => {
+        this.router.navigate(['/']);
+      }, err => {
+        this.authStatusListener.next(false);
       });
   }
 
@@ -69,6 +71,8 @@ export class AuthService {
           this.saveAuthData(this.token, expirationDate, this.userId);
           this.router.navigate(['/']);
         }
+      }, err => {
+        this.authStatusListener.next(false);
       });
   }
 
