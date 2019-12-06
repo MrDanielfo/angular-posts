@@ -7,7 +7,8 @@ const postsRoutes = require("./routes/posts")
 const userRoutes = require("./routes/user")
 
 
-mongoose.connect("mongodb://localhost:27017/maxiapp", {
+// mongodb://localhost:27017maxiapp/
+mongoose.connect("mongodb+srv://danielfo:" + process.env.MONGO_ATLAS_PW  + "@maxiposts-v9a8c.mongodb.net/maxiposts?retryWrites=true&w=majority", {
   useCreateIndex: true,
   useNewUrlParser: true,
   useFindAndModify: false,

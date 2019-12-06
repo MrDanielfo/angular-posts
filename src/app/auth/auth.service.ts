@@ -3,8 +3,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
-
 import { Auth } from './auth.model';
+import { environment } from '../../environments/environment';
+
+const BACKEND_URL = `${environment.apiUrl}/users`;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -41,7 +43,7 @@ export class AuthService {
   createUser(email: string, password: string) {
     const authData: Auth = { email, password };
     return this.http
-      .post('http://localhost:3000/api/users/signup', authData, this.httpOptions)
+      .post(`${BACKEND_URL}/signup`, authData, this.httpOptions)
       .subscribe(() => {
         this.router.navigate(['/']);
       }, err => {
@@ -53,7 +55,7 @@ export class AuthService {
     const authData: Auth = { email, password };
     this.http
       .post<{token: string, expiresIn: number, userId: string}>(
-        'http://localhost:3000/api/users/login',
+        `${BACKEND_URL}/login`,
         authData,
         this.httpOptions
       )

@@ -1,0 +1,6 @@
+{
+  "env": {
+    "MONGO_ATLAS_PW": "corvettez6",
+    "JWT_KEY": "the_higher_they_fly_the_harder_they_fall"
+  }
+}
